@@ -1,0 +1,10 @@
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/uninstall.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/mavlink_serial_client_uninstall.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/mavlink_serial_client.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/test.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/list_install_components.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/install.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/install/local.dir
+/home/masskro/Masterarbeit/src/px-ros-pkg/drivers/mavlink_serial_client/cmake-build-debug/CMakeFiles/install/strip.dir

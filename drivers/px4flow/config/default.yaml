@@ -1,0 +1,5 @@
+/**:
+  ros__parameters:
+    px4flow:
+      serial_port: /dev/ttyS0
+      baudrate:    115200

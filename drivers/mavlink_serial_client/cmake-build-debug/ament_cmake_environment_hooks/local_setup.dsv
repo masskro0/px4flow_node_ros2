@@ -1,0 +1,2 @@
+source;share/mavlink_serial_client/environment/ament_prefix_path.sh
+source;share/mavlink_serial_client/environment/path.sh
