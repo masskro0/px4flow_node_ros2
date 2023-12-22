@@ -1,7 +1,6 @@
 #include <boost/bind.hpp>
 
 // ROS includes
-#include <px_comm/msg/optical_flow.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 #include <sensor_msgs/msg/image.hpp>
 
@@ -28,7 +27,27 @@ SerialComm::SerialComm(const std::string& frameId)
  , m_errorCount(0)
  , m_connected(false)
 {
+  std::string serial_port;
+  int baudrate;
+  std::string tpub_opt_flow;
+  this->declare_parameter("serial_port", "");
+  serial_port = this->get_parameter("serial_port").as_string();
+  this->declare_parameter("baudrate", 0);
+  baudrate = this->get_parameter("baudrate").as_int();
+  this->declare_parameter("tpub_opt_flow", "");
+  tpub_opt_flow = this->get_parameter("tpub_opt_flow").as_string();
 
+  if (!this->open(serial_port, baudrate))
+  {
+    rclcpp::shutdown();
+  }
+
+  // set up publishers
+  m_optFlowPub = this->create_publisher<px_comm::msg::OpticalFlow>(tpub_opt_flow, 5);
+  image_transport::ImageTransport it(this->make_shared("px4flow"));
+  m_imagePub = it.advertise("camera_image", 5);
+
+  timer_ = this->create_wall_timer(2.0s, std::bind(&SerialComm::syncCallback, this));
 }
 
 SerialComm::~SerialComm()
@@ -78,17 +97,9 @@ SerialComm::open(const std::string& portStr, int baudrate)
         return false;
     }
 
-    // set up publishers
-    m_optFlowPub = this->create_publisher<px_comm::msg::OpticalFlow>("opt_flow", 5);
-
-    image_transport::ImageTransport it(this->make_shared("px4flow"));
-    m_imagePub = it.advertise("camera_image", 5);
-
     // set up thread to asynchronously read data from serial port
     readStart(1000);
     m_uartThread = boost::thread(boost::bind(&boost::asio::io_service::run, &m_uartService));
-
-    timer_ = this->create_wall_timer(2.0s, std::bind(&SerialComm::syncCallback, this));
 
     m_connected = true;
 
