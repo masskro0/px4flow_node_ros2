@@ -30,6 +30,7 @@ SerialComm::SerialComm(const std::string& frameId)
   std::string serial_port;
   int baudrate;
   std::string tpub_opt_flow;
+
   this->declare_parameter("serial_port", "");
   serial_port = this->get_parameter("serial_port").as_string();
   this->declare_parameter("baudrate", 0);
@@ -37,15 +38,15 @@ SerialComm::SerialComm(const std::string& frameId)
   this->declare_parameter("tpub_opt_flow", "");
   tpub_opt_flow = this->get_parameter("tpub_opt_flow").as_string();
 
-  if (!this->open(serial_port, baudrate))
-  {
-    rclcpp::shutdown();
-  }
-
   // set up publishers
   m_optFlowPub = this->create_publisher<px_comm::msg::OpticalFlow>(tpub_opt_flow, 5);
   image_transport::ImageTransport it(this->make_shared("px4flow"));
   m_imagePub = it.advertise("camera_image", 5);
+
+  if (!this->open(serial_port, baudrate))
+  {
+    rclcpp::shutdown();
+  }
 
   timer_ = this->create_wall_timer(2.0s, std::bind(&SerialComm::syncCallback, this));
 }
@@ -116,7 +117,6 @@ SerialComm::close(void)
 
     m_uartService.post(boost::bind(&boost::asio::deadline_timer::cancel, &m_timer));
     m_uartService.post(boost::bind(&boost::asio::serial_port::close, &m_port));
-
     m_uartThread.join();
 }
 
