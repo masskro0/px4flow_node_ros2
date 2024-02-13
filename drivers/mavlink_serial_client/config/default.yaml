@@ -1,6 +1,16 @@
-/**:
-  ros__parameters:
-    mavlink:
-      serial_port: /dev/ttyS0
-      baudrate:    115200
-      frame_id:    fcu
+/mavlink_serial_client:
+  mavlink_serial_client:
+    ros__parameters:
+      # Constants:
+      serial_port: "/dev/ttyACM0"
+      baudrate: 115200
+      frame_id: "fcu"
+
+      # Topics:
+      tpub_mavlink: "mavlink_serial_client/mavlink"
+      tpub_opt_flow: "mavlink_serial_client/opt_flow"
+      tpub_camera_image: "mavlink_serial_client/camera_image"
+      tpub_imu: "mavlink_serial_client/imu"
+      tpub_mag: "mavlink_serial_client/mag"
+      tpub_vicon: "mavlink_serial_client/vicon"
+      tpub_raw_imu: "mavlink_serial_client/raw_imu"

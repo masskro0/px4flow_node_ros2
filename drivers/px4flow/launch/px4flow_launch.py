@@ -16,7 +16,6 @@ def generate_launch_description():
             executable=exe,
             namespace=pkg,
             name=exe,
-            parameters=[os.path.join(
-                get_package_share_directory(pkg), config_file)]
+            parameters=[os.path.join(get_package_share_directory(pkg), config_file)]
         )
     ])

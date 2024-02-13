@@ -10,7 +10,7 @@ namespace px
 {
 
 SerialComm::SerialComm(const std::string& frameId)
- : Node("mavlink")
+ : Node("mavlink_serial_client")
  , m_port(m_uartService)
  , m_timer(m_uartService)
  , m_timeout(false)
@@ -25,7 +25,53 @@ SerialComm::SerialComm(const std::string& frameId)
  , m_errorCount(0)
  , m_connected(false)
 {
+  std::string serial_port;
+  int baudrate;
+  std::string tpub_mavlink;
+  std::string tpub_opt_flow;
+  std::string tpub_camera_image;
+  std::string tpub_imu;
+  std::string tpub_mag;
+  std::string tpub_vicon;
+  std::string tpub_raw_imu;
+  this->declare_parameter("serial_port", "");
+  serial_port = this->get_parameter("serial_port").as_string();
+  this->declare_parameter("baudrate", 0);
+  baudrate = this->get_parameter("baudrate").as_int();
+  this->declare_parameter("tpub_mavlink", "");
+  tpub_mavlink = this->get_parameter("tpub_mavlink").as_string();
+  this->declare_parameter("tpub_opt_flow", "");
+  tpub_opt_flow = this->get_parameter("tpub_opt_flow").as_string();
+  this->declare_parameter("tpub_camera_image", "");
+  tpub_camera_image = this->get_parameter("tpub_camera_image").as_string();
+  this->declare_parameter("tpub_imu", "");
+  tpub_imu = this->get_parameter("tpub_imu").as_string();
+  this->declare_parameter("tpub_mag", "");
+  tpub_mag = this->get_parameter("tpub_mag").as_string();
+  this->declare_parameter("tpub_vicon", "");
+  tpub_vicon = this->get_parameter("tpub_vicon").as_string();
+  this->declare_parameter("tpub_raw_imu", "");
+  tpub_raw_imu = this->get_parameter("tpub_raw_imu").as_string();
 
+  if (!this->open(serial_port, baudrate))
+  {
+    rclcpp::shutdown();
+  }
+
+  // set up publishers
+  m_mavlinkPub = this->create_publisher<px_comm::msg::Mavlink>(tpub_mavlink, 100);
+  m_optFlowPub = this->create_publisher<px_comm::msg::OpticalFlow>(tpub_opt_flow, 5);
+
+  image_transport::ImageTransport it(this->make_shared(m_frameId));
+  m_imagePub = it.advertise(tpub_camera_image, 5);
+
+  // AscTec-specific
+  m_imuPub = this->create_publisher<sensor_msgs::msg::Imu>(tpub_imu, 10);
+  m_magPub = this->create_publisher<sensor_msgs::msg::MagneticField>(tpub_mag, 10);
+  m_viconPub = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>(tpub_vicon, 10);
+
+  m_imuRawPub = this->create_publisher<sensor_msgs::msg::Imu>(tpub_raw_imu, 10);
+  timer_ = this->create_wall_timer(2.0s, std::bind(&SerialComm::syncCallback, this));
 }
 
 SerialComm::~SerialComm()
@@ -75,25 +121,9 @@ SerialComm::open(const std::string& portStr, int baudrate)
         return false;
     }
 
-    // set up publishers
-    m_mavlinkPub = this->create_publisher<px_comm::msg::Mavlink>("mavlink", 100);
-    m_optFlowPub = this->create_publisher<px_comm::msg::OpticalFlow>("opt_flow", 5);
-
-    image_transport::ImageTransport it(this->make_shared(m_frameId));
-    m_imagePub = it.advertise("camera_image", 5);
-
-    // AscTec-specific
-    m_imuPub = this->create_publisher<sensor_msgs::msg::Imu>("imu", 10);
-    m_magPub = this->create_publisher<sensor_msgs::msg::MagneticField>("mag", 10);
-    m_viconPub = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>("vicon", 10);
-
-    m_imuRawPub = this->create_publisher<sensor_msgs::msg::Imu>("imu", 10);
-
     // set up thread to asynchronously read data from serial port
     readStart(1000);
     m_uartThread = boost::thread(boost::bind(&boost::asio::io_service::run, &m_uartService));
-
-    timer_ = this->create_wall_timer(2.0s, std::bind(&SerialComm::syncCallback, this));
 
     m_connected = true;
 

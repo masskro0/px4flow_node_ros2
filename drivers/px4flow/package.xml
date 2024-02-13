@@ -2,19 +2,19 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>px4flow</name>
-  <version>1.0.0</version>
+  <version>0.2.0</version>
   <description>The px4flow package</description>
-  <maintainer email="michael.heine@octanes.de">Michael Heine</maintainer>
-  <maintainer email="hengli@inf.ethz.ch">Lionel Heng</maintainer>
-  <license>None</license>
+  <maintainer email="michael.heine1@gmx.net">Michael Heine</maintainer>
+  <author email="hengli@inf.ethz.ch">Lionel Heng</author>
+  <license>BSD</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
   <depend>rclpy</depend>
-  <depend>std_msgs</depend>
   <depend>image_transport</depend>
   <depend>px_comm</depend>
+  <depend>std_msgs</depend>
 
   <exec_depend>ros2launch</exec_depend>
 

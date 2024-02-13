@@ -18,21 +18,17 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(image_transport REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(px_comm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(Eigen3 REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(px_comm REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 install(
   DIRECTORY include/
   DESTINATION include
 )
-
-###########
-## Build ##
-###########
 
 include_directories(include
   ../../mavlink/include/mavlink/v1.0
@@ -40,35 +36,35 @@ include_directories(include
   ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_executable(mavlink_serial_client
+add_executable(${PROJECT_NAME}
   src/SerialComm.cc
   src/mavlink_serial_client.cc
 )
 
-ament_target_dependencies(mavlink_serial_client
+ament_target_dependencies(${PROJECT_NAME}
   rclcpp
-  std_msgs
-  sensor_msgs
   image_transport
   px_comm
+  sensor_msgs
+  std_msgs
 )
 
-target_link_libraries(mavlink_serial_client
+target_link_libraries(${PROJECT_NAME}
   Boost::thread
 )
 
-install(TARGETS mavlink_serial_client
-  DESTINATION lib/mavlink_serial_client
+install(TARGETS ${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 install(
   DIRECTORY config/
-  DESTINATION share/mavlink_serial_client
+  DESTINATION share/${PROJECT_NAME}
 )
 
 install(
   DIRECTORY launch/
-  DESTINATION share/mavlink_serial_client
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()
