@@ -1,4 +1,0 @@
-source;share/px4flow/local_setup.bash
-source;share/px4flow/local_setup.dsv
-source;share/px4flow/local_setup.sh
-source;share/px4flow/local_setup.zsh
